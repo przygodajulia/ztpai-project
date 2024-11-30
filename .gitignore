@@ -1,0 +1,29 @@
+# Python bytecode
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment
+venv/
+env/
+
+# Database files
+*.sqlite3
+.DS_Store
+app/.DS_Store
+app/hello_django/.DS_Store
+
+# Django migrations
+*/migrations/
+
+# Local environment files
+.env
+.env.dev
+*.env
+
+# IDE/editor folders
+.vscode/
+.idea/
+
+# Logs
+*.log
