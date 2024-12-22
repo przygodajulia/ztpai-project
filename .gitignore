@@ -11,7 +11,7 @@ env/
 *.sqlite3
 .DS_Store
 app/.DS_Store
-app/hello_django/.DS_Store
+app/config/.DS_Store
 
 # Django migrations
 */migrations/
