@@ -1,11 +1,59 @@
+{% load static %}
+
+<!-- login_register.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Login - Pacepal</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <script type="text/javascript" src="{% static 'js/validate_fields.js' %}" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Pacepal - Welcome</title>
 </head>
 <body>
-    <h1>Hello, World!</h1>
+
+    <div class="simple-login-header">
+        <header>
+            <img class="header-img" src="{% static 'img/running_girl.png' %}" alt="main logo image">
+            <div class="logo-login-page"><h1 class="default-header-text">Pacepal</h1></div>
+        </header>
+    </div>
+
+    <main>
+        <div class="login-forms-main-container">
+            <!-- Login Form -->
+            <div class="single-login-form single-login-form-style single-login-form-1">
+                <img class="login-icon" src="{% static 'img/sign-in.png' %}" alt="sign in icon">
+                <h2 class="simple-login-header">Welcome!</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ login_form.email }}
+                    {{ login_form.password }}
+                    <button type="submit" class="blue-button">Login</button>
+                </form>
+            </div>
+
+            <div class="single-login-form single-login-form-style single-login-form-2 js-validation-fields">
+                <img class="login-icon" src="{% static 'img/user.png' %}" alt="user icon">
+                <h2 class="simple-login-header">Create account!</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ register_form.full_name }}
+                    {{ register_form.email }}
+                    {{ register_form.password }}
+                    <button type="submit" class="blue-button">Create</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Pacepal. All rights reserved.</p>
+    </footer>
+
 </body>
 </html>

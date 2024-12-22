@@ -20,11 +20,9 @@ from users import views
 # from users.views import login_page
 import sys
 
-print("MY PATH")
-print(sys.path)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('name', include('users.urls')),
+    path('', include('users.urls')),
     # path('login/', login_page, name='login')
 ]
