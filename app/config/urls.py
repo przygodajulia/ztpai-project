@@ -16,15 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from users import views
-# from users.views import login_page
-import sys
+from django.views.generic import RedirectView
 
-print("MY PATH")
-print(sys.path)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('name', include('users.urls')),
-    # path('login/', login_page, name='login')
+
+    # Redirect to login-register view when users visits the webiste
+    path('', RedirectView.as_view(url='/users/login-register/')),
+
+    # Include users app urls
+    path('users/', include('users.urls')),
 ]
