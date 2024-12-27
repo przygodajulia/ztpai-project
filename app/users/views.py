@@ -1,60 +1,51 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, get_user_model
-from django.contrib import messages
-from django.views import View
-from .forms import LoginForm, RegisterForm
+from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import RegisterSerializer, LoginSerializer
 
-class LoginRegisterView(View):
+
+class LoginRegisterAPIView(APIView):
     def get(self, request, *args, **kwargs):
-        # Create the login and register forms for GET request
-        login_form = LoginForm()
-        register_form = RegisterForm()
-        return render(request, 'login_register.html', {'login_form': login_form, 'register_form': register_form})
+        # For GET requests, render the login and register forms
+        return render(request, 'users/login_register.html')
 
-    # def post(self, request, *args, **kwargs):
-    #     # Determine which form was submitted (login or register)
-    #     if 'login_submit' in request.POST:
-    #         login_form = LoginForm(request.POST)
-    #         register_form = RegisterForm()  # Reset register form on login attempt
-    #         if login_form.is_valid():
-    #             # Process the login form
-    #             email = login_form.cleaned_data['email']
-    #             password = login_form.cleaned_data['password']
+    def post(self, request, *args, **kwargs):
+        action = request.data.get('action')
+        if action == "register":
+            return self.register_user(request)
+        elif action == "login":
+            return self.login_user(request)
+        return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
-    #             # Authenticate the user
-    #             user = authenticate(request, username=email, password=password)
-    #             if user is not None:
-    #                 # Login the user
-    #                 login(request, user)
-    #                 return redirect('races')  # Redirect to a different page after login, for example: 'races'
-    #             else:
-    #                 messages.error(request, 'Invalid email or password.')
+    def register_user(self, request):
+        register_serializer = RegisterSerializer(data=request.data)
+        if register_serializer.is_valid():
+            user = register_serializer.save()
+            return Response({
+                "message": "Registration successful! You can now log in."
+            }, status=status.HTTP_201_CREATED)
 
-    #     elif 'register_submit' in request.POST:
-    #         login_form = LoginForm()  # Reset login form on registration attempt
-    #         register_form = RegisterForm(request.POST)
-    #         if register_form.is_valid():
-    #             # Process the registration form
-    #             full_name = register_form.cleaned_data['full_name']
-    #             email = register_form.cleaned_data['email']
-    #             password = register_form.cleaned_data['password']
+        # If there are validation errors, return them in the response
+        errors = [f"{error[0]}" for error in register_serializer.errors.values()]
+        return Response({
+            "errors": errors
+        }, status=status.HTTP_400_BAD_REQUEST)
 
-    #             # Check if the user already exists
-    #             if get_user_model().objects.filter(email=email).exists():
-    #                 messages.error(request, 'A user with this email already exists.')
-    #             else:
-    #                 # Create and save the new user
-    #                 user = get_user_model().objects.create_user(
-    #                     username=email, email=email, password=password
-    #                 )
-    #                 user.first_name = full_name
-    #                 user.save()
+    def login_user(self, request):
+        login_serializer = LoginSerializer(data=request.data)
+        if login_serializer.is_valid():
+            user = login_serializer.validated_data['user']
+            refresh = RefreshToken.for_user(user)
+            access_token = refresh.access_token
+            return Response({
+                "message": "Login successful!",
+                "access_token": str(access_token)
+            }, status=status.HTTP_200_OK)
 
-    #                 # After successful registration, log the user in
-    #                 login(request, user)
-    #                 return redirect('races')  # Redirect to a different page after successful registration, for example: 'races'
-    #         else:
-    #             messages.error(request, 'Please correct the errors below.')
-
-        # If the form is invalid or user is not authenticated, render the login page with error messages
-        return render(request, 'login_register.html', {'login_form': login_form, 'register_form': register_form})
+        # If there are validation errors, return them in the response
+        errors = [f"{error[0]}" for error in login_serializer.errors.values()]
+        return Response({
+            "errors": errors
+        }, status=status.HTTP_400_BAD_REQUEST)

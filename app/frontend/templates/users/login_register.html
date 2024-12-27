@@ -1,14 +1,12 @@
 {% load static %}
-
-<!-- login_register.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login - Pacepal</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-    <script type="text/javascript" src="{% static 'js/validate_fields.js' %}" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="{% static 'js/users/login-register.js' %}" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -29,25 +27,34 @@
             <div class="single-login-form single-login-form-style single-login-form-1">
                 <img class="login-icon" src="{% static 'img/sign-in.png' %}" alt="sign in icon">
                 <h2 class="simple-login-header">Welcome!</h2>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ login_form.email }}
-                    {{ login_form.password }}
+                <form id="login-form" autocomplete="off">
+                    <div class="messages" id="login-messages"></div>
+
+                    <!-- Login Form Fields -->
+                    <input type="email" name="login_username" placeholder="E-mail" required>
+                    <input type="password" name="login_password" placeholder="Password" required>
+                    
                     <button type="submit" class="blue-button">Login</button>
                 </form>
             </div>
 
+            <!-- Register Form -->
             <div class="single-login-form single-login-form-style single-login-form-2 js-validation-fields">
                 <img class="login-icon" src="{% static 'img/user.png' %}" alt="user icon">
                 <h2 class="simple-login-header">Create account!</h2>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ register_form.full_name }}
-                    {{ register_form.email }}
-                    {{ register_form.password }}
+                <form id="register-form" autocomplete="off">
+                    <div class="messages" id="register-messages"></div>
+
+                    <!-- Register Form Fields -->
+                    <input type="text" name="full_name" placeholder="Full Name" required>
+                    <input type="email" name="register_username" placeholder="E-mail" required>
+                    <input type="text" name="location" placeholder="Location" required>
+                    <input type="password" name="register_password" placeholder="Password" required>
+                    
                     <button type="submit" class="blue-button">Create</button>
                 </form>
             </div>
+
         </div>
     </main>
 
